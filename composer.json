@@ -1,0 +1,19 @@
+{
+    "name": "larakit/lk-page",
+    "description": "",
+    "version": "dev-trunk",
+    "license": "MIT",
+    "require": {
+        "laravel/framework": "5.*",
+        "larakit/lk-html": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Larakit\\": "src/"
+        },
+        "files": [
+            "src/init.php"
+        ]
+    },
+    "minimum-stability": "dev"
+}
