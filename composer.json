@@ -1,6 +1,6 @@
 {
     "name": "larakit/lk-page",
-    "description": "",
+    "description": "[Larakit] Управление страницей",
     "version": "dev-trunk",
     "license": "MIT",
     "require": {
