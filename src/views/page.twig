@@ -1,15 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>{{ page_data('title')|raw }}</title>
-        <meta charset="{{ page_data('charset') }}"/>
-        <meta http-equiv="X-UA-Compatible" content="{{ page_data('charset') }}"/>
-        <meta name="viewport" content="{{ page_data('viewport') }}"/>
-{{ widget('meta_tags')|raw }}
-        {{ laracss()|raw }}
+    <head>{{ larakit_page_head()|raw }}
     </head>
     <body {{ page_data('body_attributes')|raw }}>
-    {{ layout|raw }}
+        {{ layout|raw }}
         {{ larajs()|raw }}
     </body>
 </html>

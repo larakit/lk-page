@@ -10,17 +10,15 @@ namespace Larakit\Page;
 
 use Closure;
 
-class PageMiddlewareAfter {
+class PageMiddleware {
 
     public function handle($request, Closure $next) {
-        $response = $next($request);
-
         //Регистрация тем оформления
         $page_custom_file = app_path('Http/page.php');
         if(file_exists($page_custom_file)) {
             require_once $page_custom_file;
         }
 
-        return $response;
+        return $next($request);
     }
 }

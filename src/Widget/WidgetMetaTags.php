@@ -7,21 +7,6 @@ use Larakit\Base\Widget;
 
 class WidgetMetaTags extends Widget {
     protected $properties = [
-        'title'       => [
-            'title'         => 'name',
-            'og:title'      => 'name',
-            'twitter:title' => 'name',
-        ],
-        'description' => [
-            'description'         => 'name',
-            'og:description'      => 'name',
-            'twitter:description' => 'name',
-        ],
-        'keywords'    => [
-            'keywords'         => 'name',
-            'og:keywords'      => 'name',
-            'twitter:keywords' => 'name',
-        ],
         'image'       => [
             'og:image'          => 'name',
             'twitter:card'      => 'name',

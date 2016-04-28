@@ -14,14 +14,22 @@ class PageMeta {
         'charset' => 'utf-8',
     ];
     static $meta_http_equiv = [
-        'x-dns-prefetch-control' => 'on',
+        'X-UA-Compatible' => 'IE=edge,chrome=1',
     ];
     static $meta_name       = [
-        'GENERATOR' => 'FrontPage',
+        'viewport'  => 'width=device-width, initial-scale=1.0',
+        'GENERATOR' => 'Larakit (https://github.com/larakit)',
+    ];
+    static $meta_property   = [
+        'og:locale' => 'ru_RU',
     ];
 
     static function meta_plain($k, $v) {
         self::$meta_plain[$k] = $v;
+    }
+
+    static function meta_property($k, $v) {
+        self::$meta_property[$k] = $v;
     }
 
     static function meta_name($k, $v) {
@@ -32,17 +40,14 @@ class PageMeta {
         self::$meta_http_equiv[$k] = $v;
     }
 
-    static function addMetaHttpEquiv($name, $content) {
-        self::$meta['name'][$name]['http-equiv'][$content] = $content;
-    }
-
-    static function setMetaNameGenerator($content) {
-        self::setMetaName('GENERATOR', $content);
-    }
+    //    static function setMetaNameGenerator($content) {
+    //        self::setMetaName('GENERATOR', $content);
+    //    }
 
     /**
      * Кодировка
      * Чтобы сообщить браузеру, в какой кодировке находятся символы веб-страницы
+     *
      * @param $v
      */
     static function charset($v) {
@@ -69,6 +74,18 @@ class PageMeta {
      */
     static function keywords($v) {
         self::meta_name('keywords', str_replace(',', ' ', $v));
+    }
+
+    /**
+     * Идентификатор Facebook-application
+     *
+     * @param $v
+     */
+    static function fb_app_id($v) {
+        self::meta_property('fb:app_id', $v);
+    }
+    static function url($v) {
+        self::meta_property('og:url', \Request::url());
     }
 
     /**
