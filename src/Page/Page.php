@@ -19,7 +19,7 @@ class Page {
     static function addBreadCrumb($title, $url = '#') {
         WidgetBreadcrumbs::factory()->addItem($title, $url);
         WidgetH1::factory()->setH1($title);
-        if (Webconfig::get('breadcrumb.explode')) {
+        if(Webconfig::get('breadcrumb.explode')) {
             self::title(WidgetBreadcrumbs::factory()->getTitle());
         } else {
             self::title($title);
@@ -28,11 +28,12 @@ class Page {
 
     static function page_data() {
         self::$values['body_attributes'] = self::body()->getAttributes(true);
+
         return self::$values;
     }
 
     static function _($key, $value = null, $overwrite = false) {
-        if ($value || $overwrite) {
+        if($value || $overwrite) {
             self::$values[$key] = $value;
         }
 
@@ -55,12 +56,45 @@ class Page {
         return self::_(__FUNCTION__, $value);
     }
 
+    static $meta_plain      = [
+        'charset' => 'utf-8',
+    ];
+    static $meta_http_equiv = [
+        'x-dns-prefetch-control' => 'on',
+    ];
+    static $meta_name       = [
+        'GENERATOR' => 'FrontPage',
+    ];
+
+    static function meta_plain($k, $v) {
+        self::$meta_plain[$k] = $v;
+    }
+
+    static function meta_name($k, $v) {
+        self::$meta_name[$k] = $v;
+    }
+
+    static function meta_http_equiv($k, $v) {
+        self::$meta_http_equiv[$k] = $v;
+    }
+
+    static function metaXDnsPrefetchControl() {
+        self::meta_http_equiv('x-dns-prefetch-control', 'on');
+    }
+
+    static function addMetaHttpEquiv($name, $content) {
+        self::$meta['name'][$name]['http-equiv'][$content] = $content;
+    }
+
+    static function setMetaNameGenerator($content) {
+        self::setMetaName('GENERATOR', $content);
+    }
 
     /**
      * @return \Larakit\Html\Body
      */
     static function body() {
-        if (!self::$body) {
+        if(!self::$body) {
             self::$body = \HtmlBody::addClass('');
         }
 
