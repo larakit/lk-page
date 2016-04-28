@@ -1,9 +1,6 @@
 <?php
 namespace Larakit\Page;
 
-use Illuminate\Support\Arr;
-use Larakit\Html\Body;
-use Larakit\Webconfig;
 use Larakit\Widget\WidgetBreadcrumbs;
 use Larakit\Widget\WidgetH1;
 
@@ -19,7 +16,7 @@ class Page {
     static function addBreadCrumb($title, $url = '#') {
         WidgetBreadcrumbs::factory()->addItem($title, $url);
         WidgetH1::factory()->setH1($title);
-        if (Webconfig::get('breadcrumb.explode')) {
+        if(Webconfig::get('breadcrumb.explode')) {
             self::title(WidgetBreadcrumbs::factory()->getTitle());
         } else {
             self::title($title);
@@ -28,11 +25,12 @@ class Page {
 
     static function page_data() {
         self::$values['body_attributes'] = self::body()->getAttributes(true);
+
         return self::$values;
     }
 
     static function _($key, $value = null, $overwrite = false) {
-        if ($value || $overwrite) {
+        if($value || $overwrite) {
             self::$values[$key] = $value;
         }
 
@@ -55,16 +53,24 @@ class Page {
         return self::_(__FUNCTION__, $value);
     }
 
-
     /**
      * @return \Larakit\Html\Body
      */
     static function body() {
-        if (!self::$body) {
+        if(!self::$body) {
             self::$body = \HtmlBody::addClass('');
         }
 
         return self::$body;
+    }
+
+    /**
+     * Доменный шардинг
+     * @param $domain
+     */
+    static function dnsPrefetch($domain) {
+        PageMeta::meta_http_equiv('x-dns-prefetch-control', 'on');
+        self::addLink()->setRel('dns-prefetch')->setHref($domain);
     }
 
 }

@@ -1,3 +1,10 @@
 <?php
+/*################################################################################
 //регистрируем сервис-провайдер
-larakit_provider(Larakit\Page\LarakitServiceProvider::class);
+################################################################################*/
+\Larakit\SPA::register_provider(Larakit\Page\LarakitServiceProvider::class);
+
+/*################################################################################
+  middlewares
+################################################################################*/
+\Larakit\SPA::register_middleware(\Larakit\Page\PageMiddlewareAfter::class);
