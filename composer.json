@@ -4,8 +4,8 @@
     "version": "dev-trunk",
     "license": "MIT",
     "require": {
-        "laravel/framework": "5.*",
-        "larakit/lk-html": "*"
+        "larakit/lk-html": "*",
+        "laravel/framework": "5.*"
     },
     "autoload": {
         "psr-0": {
