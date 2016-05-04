@@ -35,7 +35,7 @@ class WidgetBreadcrumbs extends \Larakit\Base\Widget {
         foreach ($tmp as $item) {
             $ret[] = Arr::get($item, 'title');
         }
-        return implode(Webconfig::get('breadcrumb.delimitter'), $ret);
+        return implode(' / ', $ret);
     }
 
     function tpl() {

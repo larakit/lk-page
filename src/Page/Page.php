@@ -19,10 +19,11 @@ class Page {
     static function addBreadCrumb($title, $url = '#') {
         WidgetBreadcrumbs::factory()->addItem($title, $url);
         WidgetH1::factory()->setH1($title);
-        if(Webconfig::get('breadcrumb.explode')) {
-            self::title(WidgetBreadcrumbs::factory()->getTitle());
+//        if(Webconfig::get('breadcrumb.explode')) {
+        if(1) {
+            self::setTitle(WidgetBreadcrumbs::factory()->getTitle());
         } else {
-            self::title($title);
+            self::setTitle($title);
         }
     }
 

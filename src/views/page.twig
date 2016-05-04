@@ -2,7 +2,7 @@
 <html lang="en">
     <head>{{ larakit_page_head()|raw }}
     </head>
-    <body {{ page_data('body_attributes')|raw }}>
+    <body {{ larakit_page_body_attributes()|raw }}>
         {{ layout|raw }}
         {{ larajs()|raw }}
     </body>
