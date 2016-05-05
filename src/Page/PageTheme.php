@@ -59,5 +59,6 @@ class PageTheme {
         //добавить класс текущей темы оформления
         Page::body()->addClass(self::getClassTheme($theme));
         self::$current = $theme;
+        \Twig::addGlobal('current_theme', $theme);
     }
 }

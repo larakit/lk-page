@@ -59,3 +59,7 @@ if(!function_exists('larakit_page_head')) {
 Larakit\Twig::register_function('larakit_page_head', function () {
     return larakit_page_head();
 });
+
+Larakit\Twig::register_function('larakit_page_body', function () {
+    return \Larakit\Page\Page::body();
+});
