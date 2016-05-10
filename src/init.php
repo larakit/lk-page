@@ -2,8 +2,8 @@
 /*################################################################################
 //регистрируем сервис-провайдер
 ################################################################################*/
-Larakit\SPA::register_provider(Larakit\Page\LarakitServiceProvider::class);
-Larakit\SPA::register_middleware(Larakit\Page\PageMiddleware::class);
+Larakit\Boot::register_provider(Larakit\Page\LarakitServiceProvider::class);
+Larakit\Boot::register_middleware(Larakit\Page\PageMiddleware::class);
 
 //######################################################################
 // регистрируем функции
