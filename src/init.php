@@ -2,8 +2,8 @@
 /*################################################################################
 //регистрируем сервис-провайдер
 ################################################################################*/
-Larakit\Boot::register_provider(Larakit\Page\LarakitServiceProvider::class);
 Larakit\Boot::register_middleware(Larakit\Page\PageMiddleware::class);
+Larakit\Boot::register_view_path(__DIR__.'/views', 'lk-page');
 
 //######################################################################
 // регистрируем функции
