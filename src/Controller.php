@@ -7,8 +7,8 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesResources;
 
-class Controller extends BaseController
-{
+class Controller extends BaseController {
+
     use AuthorizesRequests, AuthorizesResources, DispatchesJobs, ValidatesRequests;
 
     protected $model_name;
@@ -16,20 +16,16 @@ class Controller extends BaseController
     protected $layout = null;
     protected $page   = 'lk-page::page';
 
-
     function response($vars = []) {
-        if (!isset($vars['base_url'])) {
+        if(!isset($vars['base_url'])) {
             $vars['base_url'] = $this->base_url;
         }
-        if(!$this->layout){
-            $this->layout(true);
-        }
-        $layout = \View::make($this->layout, $vars);
+        $layout = \View::make($this->getLayout(), $vars);
 
         return \View::make(
             $this->page,
             [
-                'layout' => $layout
+                'layout' => $layout,
             ]
         );
     }
@@ -39,14 +35,16 @@ class Controller extends BaseController
      *
      * @return $this
      */
-    function layout($tpl = null) {
-        if (true === $tpl) {
-            $this->layout = \Route::currentRouteName();
-        }
-        elseif (null !== $tpl) {
+    function setLayout($tpl = null) {
+        if(!is_null($tpl)) {
             $this->layout = $tpl;
         }
+
         return $this;
+    }
+
+    function getLayout() {
+        return $this->layout ? : \Route::currentRouteName();
     }
 
 }
