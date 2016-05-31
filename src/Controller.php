@@ -21,7 +21,6 @@ class Controller extends BaseController {
             $vars['base_url'] = $this->base_url;
         }
         $layout = \View::make($this->getLayout(), $vars);
-
         return \View::make(
             $this->page,
             [
