@@ -13,7 +13,7 @@ class Page {
         'http_equiv' => 'IE=edge,chrome=1',
     ];
     static protected $body;
-    static protected $title;
+    static private $title;
     static protected $favicon = '/favicon.ico';
 
     static function addBreadCrumb($title, $url = '#') {
@@ -21,7 +21,9 @@ class Page {
         WidgetH1::factory()->setH1($title);
 //        if(Webconfig::get('breadcrumb.explode')) {
         if(1) {
+//            dump('My title: '. self::getTitle());
             self::setTitle(WidgetBreadcrumbs::factory()->getTitle());
+//            dump('new title: '. self::getTitle());
         } else {
             self::setTitle($title);
         }
@@ -39,6 +41,9 @@ class Page {
     }
 
     static function getTitle() {
+//        dump(__FILE__.':'.__LINE__. ' ['.__METHOD__.']');
+//        dump(static::$title);
+//        dump(get_called_class());
         if(!self::$title) {
             return \Request::getHost();
         }
@@ -47,7 +52,10 @@ class Page {
     }
 
     static function setTitle($value) {
+//        dump(__FILE__.':'.__LINE__. ' ['.__METHOD__.']');
         self::$title = $value;
+//        laratrace($value);
+//        dump(self::$title);
         PageMeta::meta_property('og:title', $value);
         PageMeta::meta_name('twitter:title', $value);
     }

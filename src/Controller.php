@@ -6,6 +6,8 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesResources;
+use Larakit\Event\Event;
+use Larakit\Page\Page;
 
 class Controller extends BaseController {
 
@@ -21,6 +23,7 @@ class Controller extends BaseController {
             $vars['base_url'] = $this->base_url;
         }
         $layout = \View::make($this->getLayout(), $vars);
+        Event::notify('lk-page::page');
         return \View::make(
             $this->page,
             [
