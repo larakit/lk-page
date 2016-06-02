@@ -5,6 +5,8 @@
 Larakit\Boot::register_middleware(Larakit\Page\PageMiddleware::class);
 Larakit\Boot::register_view_path(__DIR__.'/views', 'lk-page');
 
+\Larakit\Widget\ManagerWidget::register(\Larakit\Widget\WidgetBreadcrumbs::class,'');
+
 //######################################################################
 // регистрируем функции
 //######################################################################
@@ -16,6 +18,7 @@ if(!function_exists('larakit_page_body_attributes')) {
 Larakit\Twig::register_function('larakit_page_body_attributes', function () {
     return larakit_page_body_attributes();
 });
+
 if(!function_exists('larakit_page_head')) {
     function larakit_page_head() {
         $ret   = [];

@@ -22,8 +22,9 @@ class Controller extends BaseController {
         if(!isset($vars['base_url'])) {
             $vars['base_url'] = $this->base_url;
         }
+        Event::notify('lk-page::before_layout');
         $layout = \View::make($this->getLayout(), $vars);
-        Event::notify('lk-page::page');
+        Event::notify('lk-page::before_page', $layout);
         return \View::make(
             $this->page,
             [

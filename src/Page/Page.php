@@ -12,18 +12,18 @@ class Page {
         'charset'    => 'utf-8',
         'http_equiv' => 'IE=edge,chrome=1',
     ];
-    static protected $body;
-    static private $title;
-    static protected $favicon = '/favicon.ico';
+    static protected    $body;
+    static private      $title;
+    static protected    $favicon = '/favicon.ico';
 
-    static function addBreadCrumb($title, $url = '#') {
-        WidgetBreadcrumbs::factory()->addItem($title, $url);
+    static function addBreadCrumb($route_name, $params=[]) {
+        return;
+        $url = route($route_name, $params);
+        WidgetBreadcrumbs::factory()->addItem($route_name);
         WidgetH1::factory()->setH1($title);
 //        if(Webconfig::get('breadcrumb.explode')) {
         if(1) {
-//            dump('My title: '. self::getTitle());
             self::setTitle(WidgetBreadcrumbs::factory()->getTitle());
-//            dump('new title: '. self::getTitle());
         } else {
             self::setTitle($title);
         }
