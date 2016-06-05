@@ -23,6 +23,7 @@ if(!function_exists('larakit_page_head')) {
     function larakit_page_head() {
         $ret   = [];
         $ret[] = PHP_EOL.sprintf('        <title>%s</title>',\Larakit\Page\Page::getTitle());
+        $ret[] = (string) \Larakit\Page\Page::base();
         foreach(\Larakit\Page\PageMeta::$meta_plain as $k => $v) {
             $ret[] = (string) HtmlMeta::setAttribute($k, $v);
         }

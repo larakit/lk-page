@@ -13,6 +13,7 @@ class Page {
         'http_equiv' => 'IE=edge,chrome=1',
     ];
     static protected    $body;
+    static protected    $base;
     static private      $title;
     static protected    $favicon = '/favicon.ico';
 
@@ -39,6 +40,18 @@ class Page {
 
         return self::$body;
     }
+
+    /**
+     * @return \Larakit\Html\Base
+     */
+    static function base() {
+        if(!self::$base) {
+            self::$base = \HtmlBase::addClass('');
+        }
+
+        return self::$base;
+    }
+
 
     static function getTitle() {
 //        dump(__FILE__.':'.__LINE__. ' ['.__METHOD__.']');
