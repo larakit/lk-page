@@ -2,6 +2,7 @@
 namespace Larakit\Page;
 
 use Illuminate\Support\Arr;
+use Larakit\User\Me;
 use Larakit\Widget\WidgetBreadcrumbs;
 use Larakit\Widget\WidgetH1;
 
