@@ -46,7 +46,7 @@ class Page {
      */
     static function base() {
         if(!self::$base) {
-            self::$base = \HtmlBase::addClass('');
+            self::$base = \HtmlBase::setHref('/');
         }
 
         return self::$base;
