@@ -1,25 +1,81 @@
 <?php
 namespace Larakit\Page;
 
-use Illuminate\Support\Arr;
-use Larakit\User\Me;
+use Larakit\Event\Event;
+use Larakit\Html\Base;
+use Larakit\Html\Body;
 use Larakit\Widget\WidgetBreadcrumbs;
 use Larakit\Widget\WidgetH1;
 
 class Page {
 
-    static protected $values  = [
-        'viewport'   => 'width=device-width, initial-scale=1.0',
-        'charset'    => 'utf-8',
-        'http_equiv' => 'IE=edge,chrome=1',
-    ];
-    static protected    $body;
-    static protected    $base;
-    static private      $title;
-    static protected    $favicon = '/favicon.ico';
+    protected $title;
+    protected $breadcrumbs = [];
+    /**
+     * @var Body
+     */
+    protected $body;
 
-    static function addBreadCrumb($route_name, $params=[]) {
-        return;
+    /**
+     * @var Base
+     */
+    protected $base;
+
+    protected $favicon      = '/favicon.ico';
+    protected $dns_prefetch = [];
+    protected $apple_icons  = [];
+    protected $image;
+    protected $charset      = 'utf-8';
+
+    function __construct() {
+        $this->body = new Body();
+        $this->base = new Base();
+    }
+
+    /**
+     * Добавим собранный layout
+     *
+     * @param $content
+     */
+    function setContent($content) {
+        $this->body->setContent($content);
+
+        return $this;
+    }
+
+    /**
+     * Установим базовый href страницы
+     *
+     * @param $href
+     *
+     * @return $this
+     */
+    function setBaseHref($href) {
+        $this->base->setHref($href);
+
+        return $this;
+    }
+
+    /**
+     * Установим базовый target страницы
+     *
+     * @param $target
+     *
+     * @return $this
+     */
+    function setBaseTarget($target) {
+        $this->base->setTarget($target);
+
+        return $this;
+    }
+
+    function getBreadCrumbs() {
+        return $this->breadcrumbs;
+    }
+    function addBreadCrumb($route_name, $params = []) {
+        $this->breadcrumbs[route($route_name, $params)] = $params;
+
+        return $this;
         $url = route($route_name, $params);
         WidgetBreadcrumbs::factory()->addItem($route_name);
         WidgetH1::factory()->setH1($title);
@@ -31,113 +87,275 @@ class Page {
         }
     }
 
-    /**
-     * @return \Larakit\Html\Body
-     */
-    static function body() {
-        if(!self::$body) {
-            self::$body = \HtmlBody::addClass('');
-        }
+    function addDnsPrefetch($url) {
+        $url                      = parse_url($url, PHP_URL_HOST);
+        $this->dns_prefetch[$url] = $url;
 
-        return self::$body;
+        return $this;
+    }
+
+    function getDnsPrefetch() {
+        return $this->dns_prefetch;
     }
 
     /**
-     * @return \Larakit\Html\Base
+     * Указать автора
+     *
+     * @param $value
+     *
+     * @return $this
      */
-    static function base() {
-        if(!self::$base) {
-            self::$base = \HtmlBase::setHref('/');
-        }
+    function setAuthor($value) {
+        \LaraPageHead::addMetaName('author', $value);
 
-        return self::$base;
+        return $this;
     }
 
-
-    static function getTitle() {
-//        dump(__FILE__.':'.__LINE__. ' ['.__METHOD__.']');
-//        dump(static::$title);
-//        dump(get_called_class());
-        if(!self::$title) {
-            return \Request::getHost();
-        }
-
-        return self::$title;
-    }
-
-    static function setTitle($value) {
-//        dump(__FILE__.':'.__LINE__. ' ['.__METHOD__.']');
-        self::$title = $value;
-//        laratrace($value);
-//        dump(self::$title);
-        PageMeta::meta_property('og:title', $value);
-        PageMeta::meta_name('twitter:title', $value);
-    }
-
-    static function setAuthor($value) {
-        PageMeta::meta_name('author', $value);
-    }
-
-    static function setDescription($value) {
+    /**
+     * @param $value
+     *
+     * @return $this
+     */
+    function setDescription($value) {
         PageMeta::meta_name('description', $value);
         PageMeta::meta_property('og:description', $value);
         PageMeta::meta_name('twitter:description', $value);
-    }
 
-    static function setKeywords($value) {
-        PageMeta::meta_name('keywords', $value);
-        PageMeta::meta_property('og:keywords', $value);
-    }
-
-    static function setUrl($value) {
-        PageMeta::meta_property('og:url', $value);
-        PageMeta::meta_name('twitter:keywords', $value);
-        PageLink::add()->setRel('canonical')->setAttribute('href', $value);
-    }
-
-    static function setSitename($value) {
-        PageMeta::meta_property('og:site_name', $value);
-    }
-
-    static function setVerificationYandex($value) {
-        PageMeta::meta_name('yandex-verification', $value);
-    }
-
-    static function setVerificationGoogle($value) {
-        PageMeta::meta_name('google-site-verification', $value);
-    }
-
-    static function setAppleTouchIcon($value) {
-        return PageLink::add()->setRel('apple-touch-icon')->setHref($value);
-    }
-
-    static function setAppleTouchIcon76($value) {
-        self::setAppleTouchIcon($value)->setAttribute('sizes', '76x76');
-    }
-
-    static function setAppleTouchIcon120($value) {
-        self::setAppleTouchIcon($value)->setAttribute('sizes', '120x120');
-    }
-
-    static function setAppleTouchIcon152($value) {
-        self::setAppleTouchIcon($value)->setAttribute('sizes', '152x152');
-    }
-
-    static function setFavicon($value) {
-        self::$favicon = $value;
-    }
-    static function getFavicon() {
-        return self::$favicon;
+        return $this;
     }
 
     /**
-     * OpenGraph: image
+     * @param $value
      *
-     * @param $src
+     * @return $this
      */
-    static function setImage($src) {
-        PageLink::add()->setRel('image_src')->setAttribute('href', $src);
-        PageMeta::meta_property('og:image', $src);
+    function setKeywords($value) {
+        PageMeta::meta_name('keywords', $value);
+        PageMeta::meta_property('og:keywords', $value);
+
+        return $this;
     }
+
+    /**
+     * @param $value
+     *
+     * @return $this
+     */
+    function setUrl($value) {
+        PageMeta::meta_property('og:url', $value);
+        PageMeta::meta_name('twitter:keywords', $value);
+        PageLink::add(__METHOD__)->setRel('canonical')->setAttribute('href', $value);
+
+        return $this;
+    }
+
+    /**
+     * @param $value
+     *
+     * @return $this
+     */
+    function setSitename($value) {
+        PageMeta::meta_property('og:site_name', $value);
+
+        return $this;
+    }
+
+    /**
+     * @param $value
+     *
+     * @return $this
+     */
+    function setVerificationYandex($value) {
+        PageMeta::meta_name('yandex-verification', $value);
+
+        return $this;
+    }
+
+    /**
+     * @param $value
+     *
+     * @return $this
+     */
+    function setVerificationGoogle($value) {
+        PageMeta::meta_name('google-site-verification', $value);
+
+        return $this;
+    }
+
+    function getAppleTouchs() {
+        return $this->apple_icons;
+    }
+
+    function setAppleTouchIcon76($value) {
+        $this->setAppleTouchIcon($value, 76);
+    }
+
+    function setAppleTouchIcon($value, $size = null) {
+        $this->apple_icons[$size] = $value;
+
+        return $this;
+
+        return PageLink::add(__METHOD__ . $size)->setRel('apple-touch-icon')->setHref($value);
+    }
+
+    function setAppleTouchIcon120($value) {
+        $this->setAppleTouchIcon($value, 120);
+    }
+
+    function setAppleTouchIcon152($value) {
+        $this->setAppleTouchIcon($value, 152);
+    }
+
+    /**
+     * @return mixed
+     */
+    function getFavicon() {
+        return $this->favicon;
+    }
+
+    function setFavicon($value) {
+        $this->favicon = $value;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCharset() {
+        return $this->charset;
+    }
+
+    /**
+     * @param string $charset
+     *
+     * @return Page;
+     */
+    public function setCharset($charset) {
+        $this->charset = $charset;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImage() {
+        return $this->image;
+    }
+
+    /**
+     * @param mixed $image
+     *
+     * @return Page;
+     */
+    public function setImage($image) {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    protected $x_ua_compatible = 'IE=edge,chrome=1';
+    protected $viewport        = 'width=device-width, initial-scale=1.0';
+    protected $generator       = 'Larakit (https://github.com/larakit)';
+
+    /**
+     * @return string
+     */
+    public function getGenerator() {
+        return $this->generator;
+    }
+
+    /**
+     * @param string $generator
+     *
+     * @return Page;
+     */
+    public function setGenerator($generator) {
+        $this->generator = $generator;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getViewport() {
+        return $this->viewport;
+    }
+
+    /**
+     * @param string $viewport
+     *
+     * @return Page;
+     */
+    public function setViewport($viewport) {
+        $this->viewport = $viewport;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getXUaCompatible() {
+        return $this->x_ua_compatible;
+    }
+
+    /**
+     * @param mixed $x_ua_compatible
+     *
+     * @return Page;
+     */
+    public function setXUaCompatible($x_ua_compatible) {
+        $this->x_ua_compatible = $x_ua_compatible;
+
+        return $this;
+    }
+
+    function __toString() {
+        try {
+            $title           = $this->getTitle();
+            $base            = $this->base;
+            $layout          = $this->body->getContent();
+            $body_attributes = $this->body->getAttributes(true);
+            $meta_tags       = Event::filter('lk-page::meta-tags', []);
+
+            return \View::make('lk-page::page', compact(
+                'base',
+                'body_attributes',
+                'title',
+                'layout',
+                'meta_tags'
+            ))->render();
+        }
+        catch(\Exception $e) {
+            dd($e->getMessage());
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle() {
+        trans('seo.'.\Route::currentRouteName());
+        return Event::filter('lk-page::title', $this->title ? : 'title');
+    }
+
+    /**
+     * @param mixed $title
+     *
+     * @return Page;
+     */
+    public function setTitle($title) {
+        $this->title = $title;
+        \LaraPageHead::addMetaProperty('og:title', $title);
+        \LaraPageHead::addMetaName('twitter:title', $title);
+        return $this;
+    }
+
+    protected $og_title;
+    protected $og_locale = 'ru_RU';
+
 
 }

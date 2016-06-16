@@ -1,9 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>{{ larakit_page_head()|raw }}
+    <head>
+        <title>{{ title }}</title>
+        {{ base|raw }}
+{% for meta_tag in meta_tags %}
+        {{ meta_tag|raw }}
+{% endfor %}
+        <!-- CSS -->
+{{ laracss()|raw }}
     </head>
-    <body {{ larakit_page_body_attributes()|raw }}>
-        {{ layout|raw }}
-        {{ larajs()|raw }}
+    {{ body|raw }}
+    <body{{ body_attributes?' '~body_attributes|raw : '' }}>
+{{ layout|raw }}
+<!-- JS -->
+{{ larajs()|raw }}
     </body>
 </html>

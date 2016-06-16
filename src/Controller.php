@@ -7,7 +7,6 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesResources;
 use Larakit\Event\Event;
-use Larakit\Page\Page;
 
 class Controller extends BaseController {
 
@@ -16,21 +15,20 @@ class Controller extends BaseController {
     protected $model_name;
     protected $base_url;
     protected $layout = null;
-    protected $page   = 'lk-page::page';
 
     function response($vars = []) {
+        $this->seo();
         if(!isset($vars['base_url'])) {
             $vars['base_url'] = $this->base_url;
         }
         Event::notify('lk-page::before_layout');
         $layout = \View::make($this->getLayout(), $vars);
         Event::notify('lk-page::before_page', $layout);
-        return \View::make(
-            $this->page,
-            [
-                'layout' => $layout,
-            ]
-        );
+        return \LaraPage::setContent($layout);
+    }
+
+    function seo(){
+
     }
 
     /**

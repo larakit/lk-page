@@ -16,8 +16,10 @@ class PageLink {
     /**
      * @return Link
      */
-    static function &add(){
-        $name               = uniqid(microtime(true), true);
+    static function &add($name=null){
+        if(!$name){
+            $name               = uniqid(microtime(true), true);
+        }
         self::$links[$name] = \HtmlLink::setContent('');
         return self::$links[$name];
     }
