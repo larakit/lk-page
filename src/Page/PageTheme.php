@@ -54,10 +54,10 @@ class PageTheme {
     static function setCurrent($theme = null) {
         //удалить все невостребованные классы тем оформления
         foreach(self::getThemes() as $t) {
-            Page::body()->removeClass(self::getClassTheme($t));
+            \LaraPage::body()->removeClass(self::getClassTheme($t));
         }
         //добавить класс текущей темы оформления
-        Page::body()->addClass(self::getClassTheme($theme));
+        \LaraPage::body()->addClass(self::getClassTheme($theme));
         self::$current = $theme;
         \Twig::addGlobal('current_theme', $theme);
     }
