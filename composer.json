@@ -5,7 +5,8 @@
     "license": "MIT",
     "require": {
         "laravel/framework": "5.*",
-        "larakit/lk-html": "*"
+        "larakit/lk-html": "*",
+        "larakit/lk-event": "*"
     },
     "autoload": {
         "psr-4": {
