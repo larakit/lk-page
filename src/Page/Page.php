@@ -2,9 +2,11 @@
 namespace Larakit\Page;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Larakit\Event\Event;
 use Larakit\Html\Base;
 use Larakit\Html\Body;
+use Larakit\Route\Route;
 use Larakit\Widget\WidgetBreadcrumbs;
 use Larakit\Widget\WidgetH1;
 
@@ -44,7 +46,7 @@ class Page {
         return $this;
     }
 
-    function body(){
+    function body() {
         return $this->body;
     }
 
@@ -77,8 +79,22 @@ class Page {
     function getBreadCrumbs() {
         return $this->breadcrumbs;
     }
-    function addBreadCrumb($route_name, $params = [], $replaces=[]) {
-        $this->breadcrumbs[route($route_name, $params)] = $params;
+
+    function addBreadCrumb($url, $replacements = []) {
+        $route_name = Route::getRouteByUri($url);
+        $title                   = \LaraPage::pageTitle($route_name, $replacements);
+        $h1                      = \LaraPage::pageH1($route_name, $replacements);
+        $h1_ext                  = \LaraPage::pageH1Ext($route_name, $replacements);
+        $description             = \LaraPage::pageH1Ext($route_name, $replacements);
+        $icon = Route::routeIcons($route_name);
+        $this->breadcrumbs[$url] = compact('title', 'icon');
+        $this->setUrl($url);
+        $_title = [];
+        foreach($this->breadcrumbs as $url=>$breadcrumb){
+            $_title[] = Arr::get($breadcrumb, 'title');
+        }
+        $_title = array_reverse($_title);
+        $this->setTitle(implode(', ', $_title))->setDescription($description);
 
         return $this;
         $url = route($route_name, $params);
@@ -319,7 +335,6 @@ class Page {
 
     function __toString() {
         try {
-            $title           = $this->getTitle();
             $base            = $this->base;
             $layout          = $this->body->getContent();
             $body_attributes = $this->body->getAttributes(true);
@@ -328,22 +343,124 @@ class Page {
             return \View::make('lk-page::page', compact(
                 'base',
                 'body_attributes',
-                'title',
                 'layout',
                 'meta_tags'
             ))->render();
         }
         catch(\Exception $e) {
-            dd($e->getMessage());
+            return $e->getMessage();
         }
     }
 
+    public function pageTitleValues() {
+        static $values;
+        if(!isset($values)) {
+            $values = Event::filter('lk-page::title', (array) trans('page.titles'));
+        }
+
+        return $values;
+    }
+
+    public function pageH1Values() {
+        static $values;
+        if(!isset($values)) {
+            $values = Event::filter('lk-page::h1', (array) trans('page.h1'));
+        }
+
+        return $values;
+    }
+
+    public function pageH1ExtValues() {
+        static $values;
+        if(!isset($values)) {
+            $values = Event::filter('lk-page::h1_ext', (array) trans('page.h1_ext'));
+        }
+
+        return $values;
+    }
+
+    public function pageDescriptionValues() {
+        static $values;
+        if(!isset($values)) {
+            $values = Event::filter('lk-page::description', (array) trans('page.description'));
+        }
+
+        return $values;
+    }
+
+
+    function applyReplacement($line, $replacements) {
+        foreach($replacements as $key => $value) {
+            $line = str_replace(
+                [':' . Str::upper($key), ':' . Str::ucfirst($key), ':' . $key],
+                [Str::upper($value), Str::ucfirst($value), $value],
+                $line
+            );
+        }
+
+        return $line;
+    }
+
     /**
-     * @return string
+     * TITLE страницы
+     *
+     * @param null $route
+     *
+     * @return mixed
      */
-    public function getTitle() {
-        $titles = Event::filter('lk-page::titles', (array)trans('page.titles'));
-        return Arr::get($titles,\Route::currentRouteName());
+    public function pageTitle($route = null, array  $replacements = []) {
+        if(!$route) {
+            $route = \Route::currentRouteName();
+        }
+
+        return $this->applyReplacement(Arr::get(self::pageTitleValues(), $route, 'title'), $replacements);
+    }
+
+    /**
+     * Заголовок H1, может отличаться от TITLE, но если не задан - берется TITLE
+     *
+     * @param null $route
+     *
+     * @return mixed
+     */
+    public function pageH1($route = null, array $replacements = []) {
+        if(!$route) {
+            $route = \Route::currentRouteName();
+        }
+        $h1 = Arr::get(self::pageH1Values(), $route);
+
+        return $this->applyReplacement($h1 ? : self::pageTitle($route), $replacements);
+    }
+
+    /**
+     * Строка возле заголовка H1
+     *
+     * @param null $route
+     *
+     * @return mixed
+     */
+    public function pageH1Ext($route = null, array $replacements = []) {
+        if(!$route) {
+            $route = \Route::currentRouteName();
+        }
+
+        return $this->applyReplacement(Arr::get(self::pageH1ExtValues(), $route), $replacements);
+    }
+
+    /**
+     * Описание сраницы
+     *
+     * @param null  $route
+     * @param array $replacements
+     *
+     * @return mixed
+     */
+    public function pageDescription($route = null, array $replacements = []) {
+        if(!$route) {
+            $route = \Route::currentRouteName();
+        }
+
+        return $this->applyReplacement(Arr::get(self::pageDescriptionValues(), $route), $replacements);
     }
 
     /**
@@ -355,11 +472,15 @@ class Page {
         $this->title = $title;
         \LaraPageHead::addMetaProperty('og:title', $title);
         \LaraPageHead::addMetaName('twitter:title', $title);
+
         return $this;
+    }
+
+    public function getTitle() {
+        return $this->title;
     }
 
     protected $og_title;
     protected $og_locale = 'ru_RU';
-
 
 }

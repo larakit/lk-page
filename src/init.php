@@ -8,14 +8,26 @@ Larakit\Boot::register_alias('LaraPage', 'Larakit\Page\Facade\Page');
 Larakit\Boot::register_alias('LaraPageHead', 'Larakit\Page\Facade\PageHead');
 
 //\Larakit\Widget\ManagerWidget::register(\Larakit\Widget\WidgetBreadcrumbs::class,'');
-\Larakit\Twig::register_function('larakit_page_h1', function(){
-
-   \Larakit\Event\Event::listener('lk-page::titles', function($event, $titles){
-      dd(func_get_args());
-   });
-   return LaraPage::getTitle(); 
+\Larakit\Twig::register_function('larakit_page_h1', function ($route = null) {
+    return LaraPage::pageH1($route);
+});
+\Larakit\Twig::register_function('larakit_page_h1_ext', function ($route = null) {
+    return LaraPage::pageH1Ext($route);
+});
+\Larakit\Twig::register_function('larakit_page_title', function () {
+    return LaraPage::getTitle();
+});
+\Larakit\Twig::register_function('larakit_page_breadcrumbs', function () {
+    return LaraPage::getBreadCrumbs();
+});
+\Larakit\Twig::register_function('larakit_route_icons', function ($route = null) {
+    return Larakit\Route\Route::routeIcons($route);
 });
 
+//TITLE для страниц сайта
+//\Larakit\Event\Event::listener('lk-page::titles', function($event, $titles){
+//   return array_merge($titles, (array)trans('page.titles'));
+//});
 
 //if(!function_exists('larakit_page_head')) {
 //    function larakit_page_head() {

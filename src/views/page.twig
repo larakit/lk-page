@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>{{ title }}</title>
+        <title>{{ larakit_page_title()|raw }}</title>
         {{ base|raw }}
 {% for meta_tag in meta_tags %}
         {{ meta_tag|raw }}
