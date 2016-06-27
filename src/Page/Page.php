@@ -43,6 +43,10 @@ class Page {
         return $this;
     }
 
+    function body(){
+        return $this->body;
+    }
+
     /**
      * Установим базовый href страницы
      *

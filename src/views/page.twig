@@ -9,8 +9,7 @@
         <!-- CSS -->
 {{ laracss()|raw }}
     </head>
-    {{ body|raw }}
-    <body{{ body_attributes?' '~body_attributes|raw : '' }}>
+    <body{% if body_attributes %} {{ body_attributes|raw }}{% endif %}>
 {{ layout|raw }}
 <!-- JS -->
 {{ larajs()|raw }}
