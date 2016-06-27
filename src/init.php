@@ -8,6 +8,13 @@ Larakit\Boot::register_alias('LaraPage', 'Larakit\Page\Facade\Page');
 Larakit\Boot::register_alias('LaraPageHead', 'Larakit\Page\Facade\PageHead');
 
 //\Larakit\Widget\ManagerWidget::register(\Larakit\Widget\WidgetBreadcrumbs::class,'');
+\Larakit\Twig::register_function('larakit_page_h1', function(){
+
+   \Larakit\Event\Event::listener('lk-page::titles', function($event, $titles){
+      dd(func_get_args());
+   });
+   return LaraPage::getTitle(); 
+});
 
 
 //if(!function_exists('larakit_page_head')) {

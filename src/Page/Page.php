@@ -1,6 +1,7 @@
 <?php
 namespace Larakit\Page;
 
+use Illuminate\Support\Arr;
 use Larakit\Event\Event;
 use Larakit\Html\Base;
 use Larakit\Html\Body;
@@ -76,7 +77,7 @@ class Page {
     function getBreadCrumbs() {
         return $this->breadcrumbs;
     }
-    function addBreadCrumb($route_name, $params = []) {
+    function addBreadCrumb($route_name, $params = [], $replaces=[]) {
         $this->breadcrumbs[route($route_name, $params)] = $params;
 
         return $this;
@@ -198,8 +199,7 @@ class Page {
         $this->apple_icons[$size] = $value;
 
         return $this;
-
-        return PageLink::add(__METHOD__ . $size)->setRel('apple-touch-icon')->setHref($value);
+//        return PageLink::add(__METHOD__ . $size)->setRel('apple-touch-icon')->setHref($value);
     }
 
     function setAppleTouchIcon120($value) {
@@ -342,8 +342,8 @@ class Page {
      * @return string
      */
     public function getTitle() {
-        trans('seo.'.\Route::currentRouteName());
-        return Event::filter('lk-page::title', $this->title ? : 'title');
+        $titles = Event::filter('lk-page::titles', (array)trans('page.titles'));
+        return Arr::get($titles,\Route::currentRouteName());
     }
 
     /**

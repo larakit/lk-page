@@ -16,7 +16,7 @@ class PageHead {
      * @return \HtmlLink
      */
     function &addLink($url) {
-        $key                             = __METHOD__ . $k;
+        $key                             = __METHOD__ . $url;
         $this->items[$this->group][$key] = \HtmlLink::setHref($url);
 
         return $this->items[$this->group][$key];
