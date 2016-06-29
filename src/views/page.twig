@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"{% if html_attributes %} {{ html_attributes|raw }}{% endif %}>
     <head>
         <title>{{ larakit_page_title()|raw }}</title>
         {{ base|raw }}

@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Larakit\Event\Event;
 use Larakit\Html\Base;
 use Larakit\Html\Body;
+use Larakit\Html\LHtml;
 use Larakit\Route\Route;
 use Larakit\Widget\WidgetBreadcrumbs;
 use Larakit\Widget\WidgetH1;
@@ -18,6 +19,10 @@ class Page {
      * @var Body
      */
     protected $body;
+    /**
+     * @var LHtml
+     */
+    protected $html;
 
     /**
      * @var Base
@@ -32,6 +37,7 @@ class Page {
 
     function __construct() {
         $this->body = new Body();
+        $this->html = new LHtml();
         $this->base = new Base();
     }
 
@@ -48,6 +54,9 @@ class Page {
 
     function body() {
         return $this->body;
+    }
+    function html() {
+        return $this->html;
     }
 
     /**
@@ -97,15 +106,6 @@ class Page {
         $this->setTitle(implode(', ', $_title))->setDescription($description);
 
         return $this;
-        $url = route($route_name, $params);
-        WidgetBreadcrumbs::factory()->addItem($route_name);
-        WidgetH1::factory()->setH1($title);
-//        if(Webconfig::get('breadcrumb.explode')) {
-        if(1) {
-            self::setTitle(WidgetBreadcrumbs::factory()->getTitle());
-        } else {
-            self::setTitle($title);
-        }
     }
 
     function addDnsPrefetch($url) {
@@ -338,11 +338,13 @@ class Page {
             $base            = $this->base;
             $layout          = $this->body->getContent();
             $body_attributes = $this->body->getAttributes(true);
+            $html_attributes = $this->html->getAttributes(true);
             $meta_tags       = Event::filter('lk-page::meta-tags', []);
 
             return \View::make('lk-page::page', compact(
                 'base',
                 'body_attributes',
+                'html_attributes',
                 'layout',
                 'meta_tags'
             ))->render();
