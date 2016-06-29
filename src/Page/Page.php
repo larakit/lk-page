@@ -55,6 +55,7 @@ class Page {
     function body() {
         return $this->body;
     }
+
     function html() {
         return $this->html;
     }
@@ -90,16 +91,16 @@ class Page {
     }
 
     function addBreadCrumb($url, $replacements = []) {
-        $route_name = Route::getRouteByUri($url);
+        $route_name              = Route::getRouteByUri($url);
         $title                   = \LaraPage::pageTitle($route_name, $replacements);
         $h1                      = \LaraPage::pageH1($route_name, $replacements);
         $h1_ext                  = \LaraPage::pageH1Ext($route_name, $replacements);
         $description             = \LaraPage::pageH1Ext($route_name, $replacements);
-        $icon = Route::routeIcons($route_name);
+        $icon                    = Route::routeIcons($route_name);
         $this->breadcrumbs[$url] = compact('title', 'icon');
         $this->setUrl($url);
         $_title = [];
-        foreach($this->breadcrumbs as $url=>$breadcrumb){
+        foreach($this->breadcrumbs as $url => $breadcrumb) {
             $_title[] = Arr::get($breadcrumb, 'title');
         }
         $_title = array_reverse($_title);
@@ -333,9 +334,16 @@ class Page {
         return $this;
     }
 
+    static protected $body_appends = '';
+
+    static function bodyAppend($content) {
+        self::$body_appends .= $content . PHP_EOL;
+    }
+
     function __toString() {
         try {
             $base            = $this->base;
+            $body_appends    = self::$body_appends;
             $layout          = $this->body->getContent();
             $body_attributes = $this->body->getAttributes(true);
             $html_attributes = $this->html->getAttributes(true);
@@ -344,6 +352,7 @@ class Page {
             return \View::make('lk-page::page', compact(
                 'base',
                 'body_attributes',
+                'body_appends',
                 'html_attributes',
                 'layout',
                 'meta_tags'
@@ -389,7 +398,6 @@ class Page {
 
         return $values;
     }
-
 
     function applyReplacement($line, $replacements) {
         foreach($replacements as $key => $value) {
