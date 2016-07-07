@@ -16,19 +16,19 @@ class Controller extends BaseController {
     protected $base_url;
     protected $layout = null;
 
+    function responseContent($content) {
+        return $this->response(compact('content'));
+    }
+
     function response($vars = []) {
-        $this->seo();
         if(!isset($vars['base_url'])) {
             $vars['base_url'] = $this->base_url;
         }
         Event::notify('lk-page::before_layout');
         $layout = \View::make($this->getLayout(), $vars);
         Event::notify('lk-page::before_page', $layout);
+
         return \LaraPage::setContent($layout);
-    }
-
-    function seo(){
-
     }
 
     /**
