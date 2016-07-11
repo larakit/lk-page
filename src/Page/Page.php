@@ -90,6 +90,12 @@ class Page {
         return $this->breadcrumbs;
     }
 
+    /**
+     * @param       $url
+     * @param array $replacements
+     *
+     * @return $this
+     */
     function addBreadCrumb($url, $replacements = []) {
         $route_name              = Route::getRouteByUri($url);
         $title                   = \LaraPage::pageTitle($route_name, $replacements);
