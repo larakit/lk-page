@@ -96,8 +96,8 @@ class Page {
      *
      * @return $this
      */
-    function addBreadCrumb($url, $replacements = []) {
-        $route_name              = Route::getRouteByUri($url);
+    function addBreadCrumb($route_name, $params = [], $replacements = []) {
+        $url        = route($route_name, $params, false);
         $title                   = \LaraPage::pageTitle($route_name, $replacements);
         $h1                      = \LaraPage::pageH1($route_name, $replacements);
         $h1_ext                  = \LaraPage::pageH1Ext($route_name, $replacements);
