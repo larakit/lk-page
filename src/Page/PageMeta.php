@@ -536,4 +536,4 @@ class PageMeta {
     }
 }
 
-PageMeta::fbAdmins('123');
+//PageMeta::fbAdmins('123');

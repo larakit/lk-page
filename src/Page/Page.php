@@ -8,37 +8,46 @@ use Larakit\Html\Base;
 use Larakit\Html\Body;
 use Larakit\Html\LHtml;
 use Larakit\Route\Route;
+use Larakit\SEO;
 use Larakit\Widget\WidgetBreadcrumbs;
 use Larakit\Widget\WidgetH1;
 
 class Page {
 
-    protected $title;
-    protected $breadcrumbs = [];
-    /**
-     * @var Body
-     */
-    protected $body;
-    /**
-     * @var LHtml
-     */
-    protected $html;
-
+    protected $apple_icons  = [];
     /**
      * @var Base
      */
     protected $base;
-
-    protected $favicon      = '/favicon.ico';
-    protected $dns_prefetch = [];
-    protected $apple_icons  = [];
-    protected $image;
+    /**
+     * @var Body
+     */
+    protected $body;
+    static protected $body_appends = '';
+    protected $breadcrumbs = [];
     protected $charset      = 'utf-8';
+    protected $dns_prefetch = [];
+    protected $favicon      = '/favicon.ico';
+    protected $generator       = 'Larakit (https://github.com/larakit)';
+    /**
+     * @var LHtml
+     */
+    protected $html;
+    protected $image;
+    protected $og_locale = 'ru_RU';
+    protected $og_title;
+    protected $title;
+    protected $viewport        = 'width=device-width, initial-scale=1.0';
+    protected $x_ua_compatible = 'IE=edge,chrome=1';
 
     function __construct() {
         $this->body = new Body();
         $this->html = new LHtml();
         $this->base = new Base();
+    }
+
+    static function bodyAppend($content) {
+        self::$body_appends .= $content . PHP_EOL;
     }
 
     /**
@@ -97,7 +106,7 @@ class Page {
      * @return $this
      */
     function addBreadCrumb($route_name, $params = [], $replacements = []) {
-        $url        = route($route_name, $params, false);
+        $url                     = route($route_name, $params, false);
         $title                   = \LaraPage::pageTitle($route_name, $replacements);
         $h1                      = \LaraPage::pageH1($route_name, $replacements);
         $h1_ext                  = \LaraPage::pageH1Ext($route_name, $replacements);
@@ -111,6 +120,32 @@ class Page {
         }
         $_title = array_reverse($_title);
         $this->setTitle(implode(', ', $_title))->setDescription($description);
+
+        return $this;
+    }
+
+    /**
+     * @param $value
+     *
+     * @return $this
+     */
+    function setUrl($value) {
+        PageMeta::meta_property('og:url', $value);
+        PageMeta::meta_name('twitter:keywords', $value);
+        PageLink::add(__METHOD__)->setRel('canonical')->setAttribute('href', $value);
+
+        return $this;
+    }
+
+    /**
+     * @param $value
+     *
+     * @return $this
+     */
+    function setDescription($value) {
+        PageMeta::meta_name('description', $value);
+        PageMeta::meta_property('og:description', $value);
+        PageMeta::meta_name('twitter:description', $value);
 
         return $this;
     }
@@ -144,35 +179,20 @@ class Page {
      *
      * @return $this
      */
-    function setDescription($value) {
-        PageMeta::meta_name('description', $value);
-        PageMeta::meta_property('og:description', $value);
-        PageMeta::meta_name('twitter:description', $value);
-
-        return $this;
-    }
-
-    /**
-     * @param $value
-     *
-     * @return $this
-     */
     function setKeywords($value) {
         PageMeta::meta_name('keywords', $value);
         PageMeta::meta_property('og:keywords', $value);
 
         return $this;
     }
-
     /**
      * @param $value
      *
      * @return $this
      */
-    function setUrl($value) {
-        PageMeta::meta_property('og:url', $value);
-        PageMeta::meta_name('twitter:keywords', $value);
-        PageLink::add(__METHOD__)->setRel('canonical')->setAttribute('href', $value);
+    function setOgImage($value) {
+       // PageMeta::meta_name('keywords', $value);
+        PageMeta::meta_property('og:image', $value);
 
         return $this;
     }
@@ -282,10 +302,6 @@ class Page {
         return $this;
     }
 
-    protected $x_ua_compatible = 'IE=edge,chrome=1';
-    protected $viewport        = 'width=device-width, initial-scale=1.0';
-    protected $generator       = 'Larakit (https://github.com/larakit)';
-
     /**
      * @return string
      */
@@ -340,20 +356,17 @@ class Page {
         return $this;
     }
 
-    static protected $body_appends = '';
-
-    static function bodyAppend($content) {
-        self::$body_appends .= $content . PHP_EOL;
-    }
-
     function __toString() {
         try {
             $base            = $this->base;
             $body_appends    = self::$body_appends;
             $layout          = $this->body->getContent();
             $body_attributes = $this->body->getAttributes(true);
+            $this->html->setAttribute('lang', \Lang::locale());
             $html_attributes = $this->html->getAttributes(true);
-            $meta_tags       = Event::filter('lk-page::meta-tags', []);
+            
+            $meta_tags       = Event::filter('larakit::meta-tags', []);
+            $meta_tags       =PageMeta::toArray();
 
             return \View::make('lk-page::page', compact(
                 'base',
@@ -369,37 +382,27 @@ class Page {
         }
     }
 
-    public function pageTitleValues() {
-        static $values;
-        if(!isset($values)) {
-            $values = Event::filter('lk-page::title', (array) trans('page.titles'));
+    /**
+     * Заголовок H1, может отличаться от TITLE, но если не задан - берется TITLE
+     *
+     * @param null $route
+     *
+     * @return mixed
+     */
+    public function pageH1($route = null, array $replacements = []) {
+        if(!$route) {
+            $route = \Route::currentRouteName();
         }
+        $h1 = Arr::get(self::pageH1Values(), $route);
 
-        return $values;
+        return $this->applyReplacement($h1 ? : self::pageTitle($route), $replacements);
     }
 
     public function pageH1Values() {
         static $values;
         if(!isset($values)) {
-            $values = Event::filter('lk-page::h1', (array) trans('page.h1'));
-        }
-
-        return $values;
-    }
-
-    public function pageH1ExtValues() {
-        static $values;
-        if(!isset($values)) {
-            $values = Event::filter('lk-page::h1_ext', (array) trans('page.h1_ext'));
-        }
-
-        return $values;
-    }
-
-    public function pageDescriptionValues() {
-        static $values;
-        if(!isset($values)) {
-            $values = Event::filter('lk-page::description', (array) trans('page.description'));
+            //$values = Event::filter('larakit::h1', array_merge(SEO::$data['h1'], (array) trans('page.h1')));
+            $values = [];
         }
 
         return $values;
@@ -428,24 +431,21 @@ class Page {
         if(!$route) {
             $route = \Route::currentRouteName();
         }
+        $value = Arr::get(self::pageTitleValues(), $route, 'title');
+        if('title'==$value){
+            $value = self::pageTitle('home');
+        }
 
-        return $this->applyReplacement(Arr::get(self::pageTitleValues(), $route, 'title'), $replacements);
+        return $this->applyReplacement($value, $replacements);
     }
 
-    /**
-     * Заголовок H1, может отличаться от TITLE, но если не задан - берется TITLE
-     *
-     * @param null $route
-     *
-     * @return mixed
-     */
-    public function pageH1($route = null, array $replacements = []) {
-        if(!$route) {
-            $route = \Route::currentRouteName();
+    public function pageTitleValues() {
+        static $values;
+        if(!isset($values)) {
+            $values = Event::filter('larakit::title', array_merge(SEO::$data['title'], (array) trans('page.title')));
         }
-        $h1 = Arr::get(self::pageH1Values(), $route);
 
-        return $this->applyReplacement($h1 ? : self::pageTitle($route), $replacements);
+        return $values;
     }
 
     /**
@@ -461,6 +461,15 @@ class Page {
         }
 
         return $this->applyReplacement(Arr::get(self::pageH1ExtValues(), $route), $replacements);
+    }
+
+    public function pageH1ExtValues() {
+        static $values;
+        if(!isset($values)) {
+            $values = Event::filter('larakit::h1_ext', array_merge((array)Arr::get(SEO::$data,'h1_ext'), (array)trans('page.h1_ext')));
+        }
+
+        return $values;
     }
 
     /**
@@ -479,6 +488,19 @@ class Page {
         return $this->applyReplacement(Arr::get(self::pageDescriptionValues(), $route), $replacements);
     }
 
+    public function pageDescriptionValues() {
+        static $values;
+        if(!isset($values)) {
+            $values = Event::filter('larakit::description', array_merge(SEO::$data['description'], (array)trans('page.description')));
+        }
+
+        return $values;
+    }
+
+    public function getTitle() {
+        return $this->title;
+    }
+
     /**
      * @param mixed $title
      *
@@ -492,11 +514,6 @@ class Page {
         return $this;
     }
 
-    public function getTitle() {
-        return $this->title;
-    }
 
-    protected $og_title;
-    protected $og_locale = 'ru_RU';
 
 }

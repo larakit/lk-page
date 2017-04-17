@@ -1,39 +1,20 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: koksharov
+ * Date: 07.10.16
+ * Time: 16:36
+ */
+
 namespace Larakit\Page;
 
+class LarakitServiceProvider extends \Illuminate\Support\ServiceProvider {
 
-
-use Larakit\ServiceProvider;
-
-class LarakitServiceProvider extends ServiceProvider {
-
-    /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = false;
-
-
-    public function boot() {
-        $this->larapackage('larakit/lk-page', 'lk-page');
-    }
-
-    /**
-     * Register the service provider.
-     *
-     * @return void
-     */
     public function register() {
-    }
+        $this->loadViewsFrom(__DIR__ . '/../../views', 'lk-page');
+        $this->publishes([
+            __DIR__ . '/../../views' => resource_path('views/vendor/lk-page'),
+        ]);
 
-    /**
-     * Get the services provided by the provider.
-     *
-     * @return array
-     */
-    public function provides() {
-        return [];
     }
-
 }

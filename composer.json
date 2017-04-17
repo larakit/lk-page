@@ -1,19 +1,35 @@
 {
     "name": "larakit/lk-page",
     "description": "[Larakit] Управление страницей",
-    "version": "dev-trunk",
+    "version": "5.0.0",
+    "keywords": [
+        "laravel",
+        "laravel 5",
+        "larakit"
+    ],	
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Alexey Berdnikov",
+            "email": "aberdnikov@gmail.com"
+        }
+    ],
     "require": {
-        "laravel/framework": "5.*",
-        "larakit/lk-html": "*",
-        "larakit/lk-event": "*"
+        "larakit/lk-route": "*",
+        "larakit/lk-staticfiles": "*",
+        "larakit/lk-event": "*",
+        "larakit/lk-twig": "*",
+        "snoopy/snoopy": "*",
+        "fzaninotto/faker": "*",
+        "alchemy/zippy": "^0.3.5"
     },
     "autoload": {
         "psr-4": {
-            "Larakit\\": "src/"
+            "Larakit\\": "src"
         },
         "files": [
             "src/init.php"
         ]
-    }
+    },
+    "minimum-stability": "dev"
 }
