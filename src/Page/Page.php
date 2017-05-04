@@ -360,6 +360,7 @@ class Page {
         try {
             $base            = $this->base;
             $body_appends    = self::$body_appends;
+            $this->html->setAttribute('csrf_token', csrf_token());
             $layout          = $this->body->getContent();
             $body_attributes = $this->body->getAttributes(true);
             $this->html->setAttribute('lang', \Lang::locale());
