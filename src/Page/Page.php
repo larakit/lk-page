@@ -7,7 +7,7 @@ use Larakit\Event\Event;
 use Larakit\Html\Base;
 use Larakit\Html\Body;
 use Larakit\Html\LHtml;
-use Larakit\SEO;
+use Larakit\Route\Route;
 
 class Page {
 
@@ -74,7 +74,7 @@ class Page {
      * @return $this
      */
     function setBaseHref($href) {
-        $this->base->setHref($href);
+        $this->base = $href;
 
         return $this;
     }

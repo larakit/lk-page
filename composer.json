@@ -17,6 +17,7 @@
     "require": {
         "larakit/lk-route": "*",
         "larakit/lk-event": "*",
+        "larakit/lk-html": "*",
         "larakit/lk-twig": "*"
     },
     "autoload": {
