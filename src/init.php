@@ -19,8 +19,6 @@ Larakit\Boot::register_provider('Larakit\Page\LarakitServiceProvider');
 \Larakit\Twig::register_function('larakit_page_breadcrumbs', function () {
     return LaraPage::getBreadCrumbs();
 });
-\Larakit\Twig::register_function('larakit_route_icons', function ($route = null) {
-    return Larakit\Route\Route::routeIcons($route);
-});
 
 Larakit\Boot::register_middleware(Larakit\Page\PageMiddleware::class);
+Larakit\Boot::register_view_path(__DIR__.'/../views', 'lk-page');

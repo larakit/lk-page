@@ -7,10 +7,7 @@ use Larakit\Event\Event;
 use Larakit\Html\Base;
 use Larakit\Html\Body;
 use Larakit\Html\LHtml;
-use Larakit\Route\Route;
 use Larakit\SEO;
-use Larakit\Widget\WidgetBreadcrumbs;
-use Larakit\Widget\WidgetH1;
 
 class Page {
 
