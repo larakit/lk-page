@@ -50,6 +50,10 @@ class LkPage {
         return $this->body;
     }
     
+    function html() {
+        return $this->html;
+    }
+    
     /**
      * Получить список доступных для выбора тем оформления
      *
