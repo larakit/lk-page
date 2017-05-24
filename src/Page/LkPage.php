@@ -323,12 +323,12 @@ class LkPage {
         foreach($this->head as $k => $v) {
             if('base' == $k) {
                 $head[] = '<!-- base -->';
-                $head[] = '<base href="' . $v . '"/>';
+                $head[] = '<base href="' . $v . '" />';
                 $head[] = '';
             }
             if('charset' == $k) {
                 $head[] = '<!-- charset -->';
-                $head[] = '<meta charset="' . $v . '"/>';
+                $head[] = '<meta charset="' . $v . '" />';
                 $head[] = '<meta http-equiv="Content-Type" content="text/html; charset=' . $v . '" />';
                 $head[] = '';
             }
@@ -350,7 +350,6 @@ class LkPage {
             if('viewport' == $k) {
                 $head[] = '<!-- viewport -->';
                 $head[] = '<meta name="viewport" content="' . $v . '" />';
-                $head[] = '<meta property="og:title" content="Мэрилин Монро"/>';
                 $head[] = '';
             }
             if('generator' == $k) {
@@ -391,11 +390,13 @@ class LkPage {
                 $head[] = '';
             }
             if('rss' == $k) {
-                $head[] = '<!-- rss -->';
-                foreach($v as $value) {
-                    $head[] = '<link rel="alternate" type="application/rss+xml" href="' . $value . '"/>';
+                if(count($v)) {
+                    $head[] = '<!-- rss -->';
+                    foreach($v as $value) {
+                        $head[] = '<link rel="alternate" type="application/rss+xml" href="' . $value . '" />';
+                    }
+                    $head[] = '';
                 }
-                $head[] = '';
             }
             if('append' == $k) {
                 $head[] = '<!-- append -->';
@@ -425,15 +426,17 @@ class LkPage {
             }
             if('robots' == $k) {
                 $head[] = '<!-- robots -->';
-                $head[] = '<meta name="robots" content="' . $v . '"/>';
+                $head[] = '<meta name="robots" content="' . $v . '" />';
                 $head[] = '';
             }
             if('dns_prefetch' == $k) {
-                $head[] = '<!-- dns-prefetch" -->';
-                foreach($v as $value) {
-                    $head[] = '<link rel="dns-prefetch" href="' . $value . '">';
+                if(count($v)) {
+                    $head[] = '<!-- dns-prefetch" -->';
+                    foreach($v as $value) {
+                        $head[] = '<link rel="dns-prefetch" href="' . $value . '">';
+                    }
+                    $head[] = '';
                 }
-                $head[] = '';
             }
         }
         $head[] = '<!-- url -->';
@@ -449,7 +452,7 @@ class LkPage {
         
         //BODY
         $content = $this->body->getContent();
-        $this->body->setContent($content . PHP_EOL . Js::instance() . PHP_EOL);
+        $this->body->setContent(PHP_EOL . $content . PHP_EOL . Js::instance() . PHP_EOL);
         
         //HTML
         $this->html->setContent(PHP_EOL . $head . PHP_EOL . $this->body . PHP_EOL);
