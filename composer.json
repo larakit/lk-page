@@ -15,18 +15,12 @@
         }
     ],
     "require": {
-        "larakit/lk-route": "*",
-        "larakit/lk-event": "*",
-        "larakit/lk-html": "*",
-        "larakit/lk-twig": "*"
+        "larakit/lk-html": "*"
     },
     "autoload": {
         "psr-4": {
             "Larakit\\": "src"
-        },
-        "files": [
-            "src/init.php"
-        ]
+        }
     },
     "minimum-stability": "dev"
 }
