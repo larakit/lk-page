@@ -311,6 +311,7 @@ class LkPage {
     }
     
     function __toString() {
+        $this->html()->setAttribute('_token', csrf_token());
         //HEAD
         $head   = [];
         $title  = isset($this->head['title']) ? $this->head['title'] : \Request::getHost();
@@ -318,10 +319,10 @@ class LkPage {
         $head[] = '<title>' . $title . '</title>';
         $head[] = '<meta property="og:title" content="' . $title . '"/>';
         $head[] = '';
-        
         $site_name = isset($this->head['site_name']) ? $this->head['site_name'] : \Request::getHost();
         $head[]    = '<!-- site_name -->';
         $head[]    = '<meta property="og:site_name" content="' . $site_name . '">';
+        
         $head[]    = '';
         
         foreach($this->head as $k => $v) {
