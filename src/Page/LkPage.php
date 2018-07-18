@@ -317,12 +317,15 @@ class LkPage {
     function __toString() {
         $this->html()
              ->setAttribute('_token', csrf_token());
+        ;
         //HEAD
         $head      = [];
         $title     = isset($this->head['title']) ? $this->head['title'] : \Request::getHost();
         $head[]    = '<!-- title -->';
         $head[]    = '<title>' . $title . '</title>';
+        $head[]    = '<meta name="twitter:card" content="summary">';
         $head[]    = '<meta property="og:title" content="' . $title . '"/>';
+        $head[]    = '<meta name="twitter:title" content="' . $title . '" />';
         $head[]    = '';
         $site_name = isset($this->head['site_name']) ? $this->head['site_name'] : \Request::getHost();
         $head[]    = '<!-- site_name -->';
@@ -380,6 +383,7 @@ class LkPage {
                     $url    = Arr::get($value, 'url');
                     $w      = Arr::get($value, 'w');
                     $h      = Arr::get($value, 'h');
+                    $head[] = '<meta name="twitter:image" content="' . $url . '">';
                     $head[] = '<meta property="og:image" content="' . $url . '">';
                     if ($w) {
                         $head[] = '<meta property="og:image:width" content="' . $w . '">';
