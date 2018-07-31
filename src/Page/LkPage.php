@@ -499,7 +499,6 @@ class LkPage {
         $head   .= $this->after_head;
         $head   .= PHP_EOL;
         $head   .= '</head>';
-
         //BODY
         $content = $this->body->getContent();
         $this->body->setContent(PHP_EOL . $this->before_page . PHP_EOL . $content . PHP_EOL . $this->after_page . PHP_EOL . Js::instance() . PHP_EOL . $this->after_script);
