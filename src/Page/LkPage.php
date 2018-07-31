@@ -314,10 +314,31 @@ class LkPage {
         return $this->setHead(__FUNCTION__, $v);
     }
 
+    protected $after_head   = '';
+    protected $after_script = '';
+    protected $after_page   = '';
+
+    function setAfterHead($value) {
+        $this->after_head = $value;
+
+        return $this;
+    }
+
+    function setAfterPage($value) {
+        $this->after_page = $value;
+
+        return $this;
+    }
+
+    function setAfterScript($value) {
+        $this->after_script = $value;
+
+        return $this;
+    }
+
     function __toString() {
         $this->html()
-             ->setAttribute('_token', csrf_token());
-        ;
+             ->setAttribute('_token', csrf_token());;
         //HEAD
         $head      = [];
         $title     = isset($this->head['title']) ? $this->head['title'] : \Request::getHost();
@@ -467,11 +488,14 @@ class LkPage {
         $head[] = '<!-- css" -->';
         $head   = '<head>' . PHP_EOL . "\t\t" . implode(PHP_EOL . "\t\t", $head) . PHP_EOL;
         $head   .= Css::instance();
+        $head   .= PHP_EOL;
+        $head   .= $this->after_head;
+        $head   .= PHP_EOL;
         $head   .= '</head>';
 
         //BODY
         $content = $this->body->getContent();
-        $this->body->setContent(PHP_EOL . $content . PHP_EOL . Js::instance() . PHP_EOL);
+        $this->body->setContent(PHP_EOL . $content . PHP_EOL . $this->after_page . PHP_EOL . Js::instance() . PHP_EOL . $this->after_script);
 
         //HTML
         $this->html->setContent(PHP_EOL . $head . PHP_EOL . $this->body . PHP_EOL);
