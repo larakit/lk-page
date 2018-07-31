@@ -317,6 +317,7 @@ class LkPage {
     protected $after_head   = '';
     protected $after_script = '';
     protected $after_page   = '';
+    protected $before_page  = '';
 
     function setAfterHead($value) {
         $this->after_head = $value;
@@ -326,6 +327,12 @@ class LkPage {
 
     function setAfterPage($value) {
         $this->after_page = $value;
+
+        return $this;
+    }
+
+    function setBeforePage($value) {
+        $this->before_page = $value;
 
         return $this;
     }
@@ -495,7 +502,7 @@ class LkPage {
 
         //BODY
         $content = $this->body->getContent();
-        $this->body->setContent(PHP_EOL . $content . PHP_EOL . $this->after_page . PHP_EOL . Js::instance() . PHP_EOL . $this->after_script);
+        $this->body->setContent(PHP_EOL . $this->before_page . PHP_EOL . $content . PHP_EOL . $this->after_page . PHP_EOL . Js::instance() . PHP_EOL . $this->after_script);
 
         //HTML
         $this->html->setContent(PHP_EOL . $head . PHP_EOL . $this->body . PHP_EOL);
