@@ -16,7 +16,8 @@ use Larakit\Html\Html;
 use Larakit\StaticFiles\Css;
 use Larakit\StaticFiles\Js;
 
-class LkPage {
+class LkPage
+{
 
     protected $html;
     protected $head = [
@@ -32,7 +33,8 @@ class LkPage {
     protected $body;
     static    $instance;
 
-    static function instance() {
+    static function instance()
+    {
         if (!isset(self::$instance)) {
             self::$instance = new LkPage();
         }
@@ -40,17 +42,20 @@ class LkPage {
         return self::$instance;
     }
 
-    function __construct() {
+    function __construct()
+    {
         $this->html = new Html();
         $this->html->setAttribute('lang', \App::getLocale());
         $this->body = new Body();
     }
 
-    function body() {
+    function body()
+    {
         return $this->body;
     }
 
-    function html() {
+    function html()
+    {
         return $this->html;
     }
 
@@ -59,7 +64,8 @@ class LkPage {
      *
      * @return array|mixed
      */
-    function getThemes() {
+    function getThemes()
+    {
         $themes = env('PAGE_THEMES');
         $themes = explode(' ', $themes);
 
@@ -73,7 +79,8 @@ class LkPage {
      *
      * @return $this
      */
-    function setTheme($theme) {
+    function setTheme($theme)
+    {
         $themes = $this->getThemes();
         foreach ($themes as $_theme) {
             $this->body->removeClass('theme--' . $_theme);
@@ -88,13 +95,15 @@ class LkPage {
      *
      * @param $content
      */
-    function setBodyContent($content) {
+    function setBodyContent($content)
+    {
         $this->body->setContent($content);
 
         return $this;
     }
 
-    protected function setHead($k, $v) {
+    protected function setHead($k, $v)
+    {
         $k              = mb_substr($k, 7);
         $k              = Str::snake($k);
         $this->head[$k] = $v;
@@ -109,7 +118,8 @@ class LkPage {
      *
      * @return \Larakit\Page\LkPage
      */
-    function setHeadTitle($v) {
+    function setHeadTitle($v)
+    {
         return $this->setHead(__FUNCTION__, $v);
 
     }
@@ -121,7 +131,8 @@ class LkPage {
      *
      * @return \Larakit\Page\LkPage
      */
-    function setHeadViewport($v) {
+    function setHeadViewport($v)
+    {
         return $this->setHead(__FUNCTION__, $v);
     }
 
@@ -132,7 +143,8 @@ class LkPage {
      *
      * @return \Larakit\Page\LkPage
      */
-    function setHeadKeywords($v) {
+    function setHeadKeywords($v)
+    {
         return $this->setHead(__FUNCTION__, $v);
     }
 
@@ -143,18 +155,21 @@ class LkPage {
      *
      * @return \Larakit\Page\LkPage
      */
-    function setHeadDescription($v) {
+    function setHeadDescription($v)
+    {
         return $this->setHead(__FUNCTION__, $v);
     }
 
-    function setHeadDnsPrefetch($url) {
+    function setHeadDnsPrefetch($url)
+    {
         $url                              = parse_url($url, PHP_URL_HOST);
         $this->head['dns_prefetch'][$url] = '//' . $url;
 
         return $this;
     }
 
-    function setHeadRobots($v) {
+    function setHeadRobots($v)
+    {
         return $this->setHead(__FUNCTION__, $v);
     }
 
@@ -163,7 +178,8 @@ class LkPage {
      *
      * @return \Larakit\Page\LkPage
      */
-    function setHeadRobotsAll() {
+    function setHeadRobotsAll()
+    {
         return $this->setHeadRobots('all');
     }
 
@@ -172,7 +188,8 @@ class LkPage {
      *
      * @return \Larakit\Page\LkPage
      */
-    function setHeadRobotsNoIndex() {
+    function setHeadRobotsNoIndex()
+    {
         return $this->setHeadRobots('noindex');
     }
 
@@ -181,7 +198,8 @@ class LkPage {
      *
      * @return \Larakit\Page\LkPage
      */
-    function setHeadRobotsNoFollow() {
+    function setHeadRobotsNoFollow()
+    {
         return $this->setHeadRobots('nofollow');
     }
 
@@ -190,7 +208,8 @@ class LkPage {
      *
      * @return \Larakit\Page\LkPage
      */
-    function setHeadRobotsNone() {
+    function setHeadRobotsNone()
+    {
         return $this->setHeadRobots('none');
     }
 
@@ -199,7 +218,8 @@ class LkPage {
      *
      * @return \Larakit\Page\LkPage
      */
-    function setHeadRobotsNoArchive() {
+    function setHeadRobotsNoArchive()
+    {
         return $this->setHeadRobots('noarchive');
     }
 
@@ -208,7 +228,8 @@ class LkPage {
      *
      * @return \Larakit\Page\LkPage
      */
-    function setHeadRobotsNoYaca() {
+    function setHeadRobotsNoYaca()
+    {
         return $this->setHeadRobots('noyaca');
     }
 
@@ -219,11 +240,13 @@ class LkPage {
      *
      * @return \Larakit\Page\LkPage
      */
-    function setHeadCompatible($v) {
+    function setHeadCompatible($v)
+    {
         return $this->setHead(__FUNCTION__, $v);
     }
 
-    function setHeadVideo($url, $w = null, $h = null) {
+    function setHeadVideo($url, $w = null, $h = null)
+    {
         return $this->setHead(__FUNCTION__, compact('url', 'w', 'h'));
     }
 
@@ -234,7 +257,8 @@ class LkPage {
      *
      * @return \Larakit\Page\LkPage
      */
-    function setHeadSiteName($v) {
+    function setHeadSiteName($v)
+    {
         return $this->setHead(__FUNCTION__, $v);
     }
 
@@ -245,7 +269,8 @@ class LkPage {
      *
      * @return \Larakit\Page\LkPage
      */
-    function setHeadImage($url, $w = null, $h = null) {
+    function setHeadImage($url, $w = null, $h = null)
+    {
         $host   = parse_url($url, PHP_URL_HOST);
         $scheme = parse_url($url, PHP_URL_SCHEME);
         if (!$host) {
@@ -261,25 +286,30 @@ class LkPage {
         return $this;
     }
 
-    function setHeadRss($url) {
+    function setHeadRss($url)
+    {
         $this->head['rss'][$url] = $url;
 
         return $this;
     }
 
-    function setHeadBase($v) {
+    function setHeadBase($v)
+    {
         return $this->setHead(__FUNCTION__, $v);
     }
 
-    function setHeadSitemap($v) {
+    function setHeadSitemap($v)
+    {
         return $this->setHead(__FUNCTION__, $v);
     }
 
-    function setHeadFavicon($v) {
+    function setHeadFavicon($v)
+    {
         return $this->setHead(__FUNCTION__, $v);
     }
 
-    function setHeadAppend($v) {
+    function setHeadAppend($v)
+    {
         $this->head['append'][$v] = $v;
 
         return $this;
@@ -292,7 +322,8 @@ class LkPage {
      *
      * @return \Larakit\Page\LkPage
      */
-    function setHeadCharset($v) {
+    function setHeadCharset($v)
+    {
         return $this->setHead(__FUNCTION__, $v);
     }
 
@@ -301,7 +332,8 @@ class LkPage {
      *
      * @return \Larakit\Page\LkPage
      */
-    function setHeadAuthor($v) {
+    function setHeadAuthor($v)
+    {
         return $this->setHead(__FUNCTION__, $v);
     }
 
@@ -310,7 +342,8 @@ class LkPage {
      *
      * @return \Larakit\Page\LkPage
      */
-    function setHeadCopyright($v) {
+    function setHeadCopyright($v)
+    {
         return $this->setHead(__FUNCTION__, $v);
     }
 
@@ -319,33 +352,39 @@ class LkPage {
     protected $after_page   = '';
     protected $before_page  = '';
 
-    function setAfterHead($value) {
+    function setAfterHead($value)
+    {
         $this->after_head = $value;
 
         return $this;
     }
 
-    function setAfterPage($value) {
+    function setAfterPage($value)
+    {
         $this->after_page = $value;
 
         return $this;
     }
 
-    function setBeforePage($value) {
+    function setBeforePage($value)
+    {
         $this->before_page = $value;
 
         return $this;
     }
 
-    function setAfterScript($value) {
+    function setAfterScript($value)
+    {
         $this->after_script = $value;
 
         return $this;
     }
 
-    function __toString() {
+    function __toString()
+    {
         $this->html()
-             ->setAttribute('_token', csrf_token());;
+            ->setAttribute('_token', csrf_token())
+        ;;
         //HEAD
         $head      = [];
         $title     = isset($this->head['title']) ? $this->head['title'] : \Request::getHost();
@@ -491,6 +530,9 @@ class LkPage {
         $head[] = '';
         $head[] = '<!-- locale -->';
         $head[] = '<meta property="og:locale" content="' . \App::getLocale() . '" />';
+        $head[] = '';
+        $head[] = '<!-- canonical -->';
+        $head[] = '<link rel="canonical" href="' . \URL::current() . '" />';
         $head[] = '';
         $head[] = '<!-- css" -->';
         $head   = '<head>' . PHP_EOL . "\t\t" . implode(PHP_EOL . "\t\t", $head) . PHP_EOL;
